@@ -198,12 +198,13 @@
 <body>
 
     <form id="form" enctype="multipart/form-data">
-        검색시작일: <input name="start" id="start" type="text" /> <br />
-        검색종료일: <input name="end" id="end" type="text" /> <br />
-        강퇴기준수: <input name="kick" id="kick" type="text" value="30" /> <br />
-        카톡파일: <input name="kakao_talk_zip" id="kakao_talk_zip" type="file"> <br />
+        검색일: <input name="start" id="start" type="text" size="10px" /> ~
+        <input name="end" id="end" type="text" size="10px" /> /
+        강퇴기준: <input name="kick" id="kick" type="text" value="30" size="3px" />회 /
+        카톡파일: <input name="kakao_talk_zip" id="kakao_talk_zip" type="file"> <br /><br />
         <button type="submit">분석고고싱</button>
     </form>
+    <br />
 
     <script>
 
@@ -267,6 +268,7 @@
     <div id="div_words" class="words">
         <canvas id="words" class="words"> </canvas>
     </div>
+    <br />
     <div id="div_users">
         <div id="users_top" class="top">
         </div>
