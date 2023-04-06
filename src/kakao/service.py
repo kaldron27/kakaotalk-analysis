@@ -78,7 +78,7 @@ async def _sort_message_(message: dict, etc_msg: dict, start: date, end: date, a
 async def _analysis_text_(text: list):
     all_word_df = pd.DataFrame({"words": text, "count": len(text) * [1]})
     all_word_df = all_word_df.groupby("words").count()
-    result_dict = all_word_df.sort_values("count", ascending=False).head(25).to_dict()
+    result_dict = all_word_df.sort_values("count", ascending=False).head(50).to_dict()
     result = []
     for words, count in result_dict.get("count").items():
         result.append({"words": words, "count": count})

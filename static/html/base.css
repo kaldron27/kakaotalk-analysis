@@ -50,6 +50,11 @@ div.all {
     background: rgb(208, 242, 255);
 }
 
+div.words_all {
+    width: 900px;
+    background: rgb(251, 255, 219);
+}
+
 
 div.ing {
     width: 900px;
