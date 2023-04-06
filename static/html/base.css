@@ -1,13 +1,15 @@
 canvas.charts {
-    width: 700px;
-    height: 700px;
+    width: 1000px;
+    height: 1000px;
     background: #eee;
+    font-size: medium;
 }
 
 canvas.words {
-    width: 700px;
-    height: 350px;
+    width: 1000px;
+    height: 500px;
     background: #ebfbff;
+    font-size: medium;
 }
 
 span {
@@ -15,47 +17,47 @@ span {
 }
 
 div {
-    font-size: small;
+    font-size: medium;
 }
 
 div.charts {
-    width: 700px;
-    height: 700px;
+    width: 1000px;
+    height: 1000px;
 }
 
 div.words {
-    width: 700px;
-    height: 350px;
+    width: 1000px;
+    height: 500px;
 }
 
 div.top {
-    width: 700px;
+    width: 1000px;
     background: rgb(241, 255, 241);
 }
 
 div.lower {
-    width: 700px;
+    width: 1000px;
     background: rgb(255, 237, 237);
 }
 
 div.outer {
-    width: 700px;
+    width: 1000px;
     background: rgb(192, 192, 192);
 }
 
 div.all {
-    width: 700px;
+    width: 1000px;
     background: rgb(208, 242, 255);
 }
 
 
 div.ing {
-    width: 700px;
+    width: 1000px;
     background: rgb(58, 135, 236);
 }
 
 div.end {
-    width: 700px;
+    width: 1000px;
     background: rgb(5, 234, 204);
 }
 
