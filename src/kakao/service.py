@@ -1,18 +1,11 @@
 from fastapi import UploadFile
 import logging
 from src.exceptions import *
-from datetime import datetime as dt
-from zipfile import ZipFile
-import os
-import shutil
-import traceback
-import io
-import re
 from datetime import date
-from io import BytesIO
+import pandas as pd
 
 
-async def _sort_message_(message: dict, etc_msg: dict, start: date, end: date):
+async def _sort_message_(message: dict, etc_msg: dict, start: date, end: date, analysis_text: list = []):
     count_list = []
     allcount = 0
     ranking = 0
@@ -60,7 +53,7 @@ async def _sort_message_(message: dict, etc_msg: dict, start: date, end: date):
             date_type["code"] = "older"
 
         allcount += count
-        count_list.append({"name": f"{name}", "count": count, "condition": date_type["type"], "condition_date": date_type["date"], "condition_code": date_type["code"],  "ranking": ranking})
+        count_list.append({"name": f"{name}", "count": count, "condition": date_type["type"], "condition_date": date_type["date"], "condition_code": date_type["code"], "ranking": ranking})
 
     # viewer = [f"집계일자: {start}~{end}", f"총 대화량: {allcount}"]
     for data in count_list:
@@ -76,4 +69,17 @@ async def _sort_message_(message: dict, etc_msg: dict, start: date, end: date):
     result["allcount"] = f"집계일자: {start}~{end}, 총 대화량: {allcount}"
     # result["top_rankers"] = count_list[:10]
     # result["viewer"] = viewer
+
+    text_result = await _analysis_text_(analysis_text)
+    result["words"] = text_result
+    return result
+
+
+async def _analysis_text_(text: list):
+    all_word_df = pd.DataFrame({"words": text, "count": len(text) * [1]})
+    all_word_df = all_word_df.groupby("words").count()
+    result_dict = all_word_df.sort_values("count", ascending=False).head(25).to_dict()
+    result = []
+    for words, count in result_dict.get("count").items():
+        result.append({"words": words, "count": count})
     return result

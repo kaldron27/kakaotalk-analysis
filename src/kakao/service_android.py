@@ -1,16 +1,18 @@
-from fastapi import UploadFile
 import logging
 from src.exceptions import *
 from datetime import datetime as dt
-from zipfile import ZipFile
 import os
 import shutil
 import traceback
 import io
 import re
 from datetime import date
-from io import BytesIO
 from . import service
+from konlpy.tag import Okt
+from .stop_words import *
+
+
+okt = Okt()
 
 # 대화 예시
 # 2023. 2. 20. 09:53, 닉네임 : 대화
@@ -20,6 +22,8 @@ from . import service
 
 regex = re.compile("^\d{4}년\s\d{1,2}월\s\d{1,2}일\s(오전|오후)\s\d{1,2}:\d{2},")  # 대화 메시지
 etc_regex = re.compile("^\d{4}년\s\d{1,2}월\s\d{1,2}일\s(오전|오후)\s\d{1,2}:\d{2},")  # 나간사람, 들어온사람, 내보내진사람은 콜론 (:)이 없음
+
+text_compile = re.compile("[^ ㄱ-ㅣ가-힣]+")  # 한글 분석
 
 inner = "님이 들어왔습니다."
 outer = "님이 나갔습니다."
@@ -35,6 +39,7 @@ hidden = "채팅방 관리자가 메시지를 가렸습니다."
 
 async def analysis(start: date, end: date, kakao_talk_zip: bytes):
     temp_dir = os.path.abspath("temp/" + str(dt.now().timestamp()).replace(".", ""))
+    analysis_text = []
     message = {}
     etc_msg = {"inner": {}, "outer": {}, "kick": {}, "hidden": 0}
     try:
@@ -55,12 +60,17 @@ async def analysis(start: date, end: date, kakao_talk_zip: bytes):
                             continue
                         if t_date >= start:
                             if t_date > end:
-                                return await service._sort_message_(message, etc_msg, start, end)
+                                return await service._sort_message_(message, etc_msg, start, end, analysis_text)
                             # t_time = full_time.time()
                             other_str = l_str[date_idx:].strip()
                             nick_idx = other_str.index(":")
                             nick = other_str[1:nick_idx].strip()
-                            # text = other_str[nick_idx + 1 :].strip()
+                            text = other_str[nick_idx + 1 :].strip()
+                            add_text = okt.pos(text_compile.sub("", text))
+                            for txt, txt_type in add_text:
+                                if txt_type in ("Noun", "Verb"):
+                                    if txt not in stop_words:
+                                        analysis_text.append(txt)
 
                             if nick not in message:
                                 message[nick] = 0
@@ -104,7 +114,7 @@ async def analysis(start: date, end: date, kakao_talk_zip: bytes):
         if os.path.exists(temp_dir):
             shutil.rmtree(temp_dir)
 
-    return await service._sort_message_(message, etc_msg, start, end)
+    return await service._sort_message_(message, etc_msg, start, end, analysis_text)
 
 
 async def _get_first_msg_(messages: list):
@@ -148,7 +158,7 @@ async def _transfer_date_(date_str: str):
     date_split = date_split[:-1]
     hours = time_split[0].strip()
     minutes = time_split[1].strip().zfill(2)
-    if hours == '12':
+    if hours == "12":
         if add_hours == 12:
             add_hours = 0
         elif add_hours == 0:

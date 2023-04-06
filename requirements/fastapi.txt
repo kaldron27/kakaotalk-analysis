@@ -11,7 +11,7 @@ pytest-asyncio
 asgi_lifespan
 httpx
 rocketry
-matplotlib
 python-multipart
 bson
-pymongo
+konlpy
+pandas

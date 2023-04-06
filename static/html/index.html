@@ -10,19 +10,29 @@
         function setChart(t_data) {
             let div_msg = document.getElementById("div_msg");
             const div_rankers = document.getElementById('div_rankers');
-            document.getElementById('rankers').remove()
+            document.getElementById('rankers').remove();
             let ranker_canvas = document.createElement('canvas');
-            ranker_canvas.setAttribute('id', 'rankers')
-            div_rankers.appendChild(ranker_canvas)
+            ranker_canvas.setAttribute('id', 'rankers');
+            ranker_canvas.setAttribute("class", "charts")
+            div_rankers.appendChild(ranker_canvas);
             const ctx = document.getElementById('rankers');
+
+            const div_words = document.getElementById('div_words');
+            document.getElementById('words').remove();
+            let words_canvas = document.createElement('canvas');
+            words_canvas.setAttribute('id', 'words');
+            words_canvas.setAttribute("class", "words")
+            div_words.appendChild(words_canvas);
+            const words_ctx = document.getElementById('words');
 
             const ranker_labels = [];
             const ranker_count_datas = [];
             const rankers = t_data.result.all_rankers
             var loop_cnt = 10
             if (rankers.length < loop_cnt) {
-                loop_cnt = rankers.length
+                loop_cnt = rankers.length;
             }
+
             for (i = 0; i < loop_cnt; i++) {
                 ranker_labels.push(rankers[i].ranking + "위: " + rankers[i].name + " (" + rankers[i].count + "회/" + rankers[i].rate + "%)");
                 ranker_count_datas.push(rankers[i].count);
@@ -47,6 +57,39 @@
                     }
                 }
             });
+
+            const words = t_data.result.words
+            const words_labels = []
+            const words_count_datas = []
+            var x = 1
+            var y = 1
+            for (i = 0; i < words.length; i++) {
+                words_labels.push(words[i].words + " (" + words[i].count + "회)");
+                words_count_datas.push(words[i].count);
+                x += 0.3
+                y += 0.3
+            };
+
+            new Chart(words_ctx, {
+                type: 'bar',
+                data: {
+                    labels: words_labels,
+                    datasets: [{
+                        label: '많이쓰는단어 top 25',
+                        categoryPercentage: 0.4,
+                        barPercentage: 0.5,
+                        barThickness: 6,
+                        maxBarThickness: 8,
+                        minBarLength: 2,
+                        data: words_count_datas,
+                        backgroundColor: ["#cc3333", "#33cc33", "#3333cc", "#ccaa33", "#cc33aa", "#33ccaa", "#aacc33", "#aa33cc", "#33aacc", "#123456"]
+                    }]
+                },
+                options: {
+                }
+            });
+
+
 
 
             let top_div = document.getElementById('users_top');
@@ -207,8 +250,12 @@
 
     </script>
     <div id="div_msg"></div>
-    <div id="div_rankers" class="chart">
-        <canvas id="rankers"></canvas>
+    <div id="div_rankers" class="charts">
+        <canvas id="rankers" class="charts"></canvas>
+    </div>
+    <br />
+    <div id="div_words" class="words">
+        <canvas id="words" class="words"> </canvas>
     </div>
     <div id="div_users">
         <div id="users_top" class="top">

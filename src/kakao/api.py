@@ -1,6 +1,5 @@
 # 각 모듈의 url 라우터 (controller)
 
-import logging
 from main import base_api
 from fastapi import APIRouter, UploadFile, File, Response, Request
 from fastapi.templating import Jinja2Templates
@@ -9,14 +8,12 @@ from . import service_ios
 from . import service_android
 from src.schemas import DefaultReponse
 from datetime import date
-from matplotlib import pyplot as plt, font_manager, rc
 import io
-import numpy as np
-import traceback
 import os
 import re
 from datetime import datetime as dt
-from zipfile import ZipFile
+from zipfile import ZipFile, BadZipFile
+import traceback
 
 route = APIRouter(prefix="/kakao", tags=["kakao analysis"])
 MAX_COUNT = 10
@@ -44,7 +41,7 @@ async def analysis(start: date, end: date, kakao_talk_zip: UploadFile):
     try:
         ZipFile(zip_io)
         return await service_ios.analysis(start, end, zip_io)
-    except Exception:
+    except BadZipFile:
         return await service_android.analysis(start, end, file_data)
 
 

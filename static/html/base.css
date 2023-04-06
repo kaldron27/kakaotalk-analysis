@@ -1,7 +1,13 @@
-canvas {
+canvas.charts {
     width: 700px;
     height: 700px;
     background: #eee;
+}
+
+canvas.words {
+    width: 700px;
+    height: 350px;
+    background: #ebfbff;
 }
 
 span {
@@ -12,9 +18,14 @@ div {
     font-size: small;
 }
 
-div.chart {
+div.charts {
     width: 700px;
     height: 700px;
+}
+
+div.words {
+    width: 700px;
+    height: 350px;
 }
 
 div.top {
