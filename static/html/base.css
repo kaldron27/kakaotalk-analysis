@@ -1,13 +1,13 @@
 canvas.charts {
-    width: 1000px;
-    height: 1000px;
+    width: 900px;
+    height: 900px;
     background: #eee;
     font-size: medium;
 }
 
 canvas.words {
-    width: 1000px;
-    height: 500px;
+    width: 900px;
+    height: 450px;
     background: #ebfbff;
     font-size: medium;
 }
@@ -21,43 +21,43 @@ div {
 }
 
 div.charts {
-    width: 1000px;
-    height: 1000px;
+    width: 900px;
+    height: 900px;
 }
 
 div.words {
-    width: 1000px;
-    height: 500px;
+    width: 900px;
+    height: 450px;
 }
 
 div.top {
-    width: 1000px;
+    width: 900px;
     background: rgb(241, 255, 241);
 }
 
 div.lower {
-    width: 1000px;
+    width: 900px;
     background: rgb(255, 237, 237);
 }
 
 div.outer {
-    width: 1000px;
+    width: 900px;
     background: rgb(192, 192, 192);
 }
 
 div.all {
-    width: 1000px;
+    width: 900px;
     background: rgb(208, 242, 255);
 }
 
 
 div.ing {
-    width: 1000px;
+    width: 900px;
     background: rgb(58, 135, 236);
 }
 
 div.end {
-    width: 1000px;
+    width: 900px;
     background: rgb(5, 234, 204);
 }
 
