@@ -1,0 +1,71 @@
+canvas {
+    width: 700px;
+    height: 700px;
+    background: #eee;
+}
+
+span {
+    background: #4b3c3c;
+}
+
+div {
+    font-size: small;
+}
+
+div.chart {
+    width: 700px;
+    height: 700px;
+}
+
+div.top {
+    width: 700px;
+    background: rgb(241, 255, 241);
+}
+
+div.lower {
+    width: 700px;
+    background: rgb(255, 237, 237);
+}
+
+div.outer {
+    width: 700px;
+    background: rgb(192, 192, 192);
+}
+
+div.all {
+    width: 700px;
+    background: rgb(208, 242, 255);
+}
+
+
+div.ing {
+    width: 700px;
+    background: rgb(58, 135, 236);
+}
+
+div.end {
+    width: 700px;
+    background: rgb(5, 234, 204);
+}
+
+.newb {
+    color: #2200ff;
+}
+
+.older {
+    color: #4b3c3c;
+}
+
+.kick {
+    color: #fffb00;
+    text-decoration: line-through
+}
+
+.out {
+    color: #feffeb;
+    text-decoration: line-through
+}
+
+.all_user {
+    color: #292b01;
+}

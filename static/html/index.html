@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="ko">
+
+<head>
+    <meta charset="utf-8">
+    <title>분석기</title>
+    <link rel="stylesheet" type="text/css" href="/static/html/base.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        function setChart(t_data) {
+            let div_msg = document.getElementById("div_msg");
+            const div_rankers = document.getElementById('div_rankers');
+            document.getElementById('rankers').remove()
+            let ranker_canvas = document.createElement('canvas');
+            ranker_canvas.setAttribute('id', 'rankers')
+            div_rankers.appendChild(ranker_canvas)
+            const ctx = document.getElementById('rankers');
+
+            const ranker_labels = [];
+            const ranker_count_datas = [];
+            const rankers = t_data.result.all_rankers
+            var loop_cnt = 10
+            if (rankers.length < loop_cnt) {
+                loop_cnt = rankers.length
+            }
+            for (i = 0; i < loop_cnt; i++) {
+                ranker_labels.push(rankers[i].ranking + "위: " + rankers[i].name + " (" + rankers[i].count + "회/" + rankers[i].rate + "%)");
+                ranker_count_datas.push(rankers[i].count);
+            };
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ranker_labels,
+                    datasets: [{
+                        label: '대화수',
+                        data: ranker_count_datas,
+                        borderWidth: 1,
+                        backgroundColor: ["#cc3333", "#33cc33", "#3333cc", "#ccaa33", "#cc33aa", "#33ccaa", "#aacc33", "#aa33cc", "#33aacc", "#123456"]
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+
+            let top_div = document.getElementById('users_top');
+            let lower_div = document.getElementById('users_lower');
+            let outer_div = document.getElementById('users_outer');
+            let all_div = document.getElementById('users_all');
+
+
+            while (top_div.hasChildNodes()) {
+                top_div.removeChild(top_div.firstChild);
+            }
+
+            while (lower_div.hasChildNodes()) {
+                lower_div.removeChild(lower_div.firstChild);
+            }
+
+            while (outer_div.hasChildNodes()) {
+                outer_div.removeChild(outer_div.firstChild);
+            }
+
+            while (all_div.hasChildNodes()) {
+                all_div.removeChild(all_div.firstChild);
+            }
+
+            let top_p = document.createElement('p');
+            let lower_p = document.createElement('p');
+            let outer_p = document.createElement('p');
+            let all_p = document.createElement('p');
+
+            top_p.innerText = "수다쟁이덜🤯";
+            lower_p.innerText = "강퇴조심😱";
+            outer_p.innerText = "역사속으로🥲";
+            all_p.innerText = "전체나열🙌🏼";
+
+            top_div.appendChild(top_p);
+            lower_div.appendChild(lower_p);
+            outer_div.appendChild(outer_p);
+            all_div.appendChild(all_p);
+
+            let top_ul = document.createElement('ul');
+            let lower_ul = document.createElement('ul');
+            let outer_ul = document.createElement('ul');
+            let all_ul = document.createElement('ul');
+
+            top_div.appendChild(top_ul);
+            lower_div.appendChild(lower_ul);
+            outer_div.appendChild(outer_ul);
+            all_div.appendChild(all_ul)
+
+            const users = t_data.result.all_rankers
+            const kick_count = document.getElementById("kick").value
+
+            for (i = 0; i < users.length; i++) {
+
+                var condition = ""
+                if (users[i].condition != null) {
+                    var condition_date = users[i].condition_date.replace("T", " ").replace("Z", "")
+                    condition = " (" + users[i].condition + ", " + condition_date + ")"
+                }
+
+                var text = users[i].ranking + "위: " + users[i].name + " (" + users[i].count + "회/" + users[i].rate + "%)" + condition;
+
+                if (users[i].condition_code == 'out' || users[i].condition_code == 'kick') {
+                    let li = document.createElement("li");
+                    li.innerText = text;
+                    li.setAttribute("class", users[i].condition_code)
+                    outer_ul.appendChild(li)
+                }
+                else if (users[i].count > kick_count) {
+                    let li = document.createElement("li");
+                    li.innerText = text;
+                    li.setAttribute("class", users[i].condition_code)
+                    top_ul.appendChild(li)
+                }
+                else {
+                    let li = document.createElement("li");
+                    li.innerText = text;
+                    li.setAttribute("class", users[i].condition_code)
+                    lower_ul.appendChild(li)
+                }
+
+                let all_li = document.createElement("li");
+
+                all_li.innerText = text;
+                all_li.setAttribute("class", "all_user")
+
+                all_ul.appendChild(all_li)
+            };
+
+            div_msg.setAttribute('class', 'end')
+            div_msg.innerText = "분석완료오오오옷~!";
+        }
+    </script>
+</head>
+
+<body>
+
+    <form id="form" enctype="multipart/form-data">
+        검색시작일: <input name="start" id="start" type="text" /> <br />
+        검색종료일: <input name="end" id="end" type="text" /> <br />
+        강퇴기준수: <input name="kick" id="kick" type="text" value="30" /> <br />
+        카톡파일: <input name="kakao_talk_zip" id="kakao_talk_zip" type="file"> <br />
+        <button type="submit">분석고고싱</button>
+    </form>
+
+    <script>
+
+        let today = new Date();
+
+        let yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        let last_week_day = new Date();
+        last_week_day.setDate(today.getDate() - 7);
+
+        let today_str = today.getFullYear() + "-" + (today.getMonth() + 1).toString().padStart(2, '0') + "-" + today.getDate().toString().padStart(2, '0')
+        let yesterday_str = yesterday.getFullYear() + "-" + (yesterday.getMonth() + 1).toString().padStart(2, '0') + "-" + yesterday.getDate().toString().padStart(2, '0')
+        let last_week_day_str = last_week_day.getFullYear() + "-" + (last_week_day.getMonth() + 1).toString().padStart(2, '0') + "-" + last_week_day.getDate().toString().padStart(2, '0')
+
+        document.getElementById("start").value = last_week_day_str
+        document.getElementById("end").value = today_str
+
+        const form = document.getElementById('form');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const start_date = document.getElementById('start').value;
+            const end_date = document.getElementById('end').value;
+
+            const payload = new FormData(form);
+
+            let div_msg = document.getElementById("div_msg");
+            div_msg.setAttribute('class', 'ing')
+            div_msg.innerText = "분.....석......중..........";
+
+            fetch('/kakao/analysis?start=' + start_date + '&end=' + end_date, {
+                method: 'POST',
+                body: payload,
+            })
+                .then(res => res.json())
+                .then((data) => {
+                    if (data.error_code == 0) {
+                        setChart(data)
+                        if (data.result.all_rankers.length == 0) {
+                            div_msg.innerText += " 대화가 엄소용 ㅠ"
+                        } else {
+                            div_msg.innerText += "\n" + data.result.allcount
+                        }
+                    }
+                    else {
+                        div_msg.innerText = "에러...발생..ㅠ\n" + data.result;
+                    }
+
+                })
+                .catch((error) => {
+                    div_msg.innerText = "에러,,,발생,,,ㅠ\n" + error;
+                });
+        });
+
+    </script>
+    <div id="div_msg"></div>
+    <div id="div_rankers" class="chart">
+        <canvas id="rankers"></canvas>
+    </div>
+    <div id="div_users">
+        <div id="users_top" class="top">
+        </div>
+        <div id="users_lower" class="lower">
+        </div>
+        <div id="users_outer" class="outer">
+        </div>
+        <div id="users_all" class="all">
+        </div>
+
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,17 @@
+uvicorn[standard]
+tortoise-orm[asyncmy]
+fastapi
+pyInstaller
+tinyaes
+pydantic
+cryptography
+aiomysql
+pytest
+pytest-asyncio
+asgi_lifespan
+httpx
+rocketry
+matplotlib
+python-multipart
+bson
+pymongo
