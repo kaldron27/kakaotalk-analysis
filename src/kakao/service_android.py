@@ -38,7 +38,9 @@ hidden = "채팅방 관리자가 메시지를 가렸습니다."
 
 
 async def analysis(start: date, end: date, kakao_talk_zip: bytes):
-    temp_dir = os.path.abspath("temp/" + str(dt.now().timestamp()).replace(".", ""))
+    current_timestamp = str(dt.now().timestamp()).replace(".", "")
+    temp_dir = os.path.abspath("temp/" + current_timestamp)
+    logging.info(f"start android analysis: {temp_dir}")
     analysis_text = []
     message = {}
     etc_msg = {"inner": {}, "outer": {}, "kick": {}, "hidden": 0}
@@ -48,7 +50,15 @@ async def analysis(start: date, end: date, kakao_talk_zip: bytes):
 
         all_messages = kakao_talk_zip.decode().splitlines()
 
+        logging_idx = int(len(all_messages) / 10) + 1
+        logging.info(f"{current_timestamp} file line length: {len(all_messages)}")
+
+        idx = 0
+
         for l_str in all_messages:
+            if idx % logging_idx == 0:
+                logging.info(f"{current_timestamp}: reading string size: {len(l_str)}")
+            idx += 1
             col_idx = l_str.rfind(":")
             com_idx = l_str.find(",")
             if regex.match(l_str) and col_idx > com_idx:

@@ -6,6 +6,7 @@ import pandas as pd
 
 
 async def _sort_message_(message: dict, etc_msg: dict, start: date, end: date, analysis_text: list = []):
+    logging.info("sort messages")
     count_list = []
     allcount = 0
     ranking = 0

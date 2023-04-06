@@ -39,7 +39,9 @@ hidden = "채팅방 관리자가 메시지를 가렸습니다."
 
 
 async def analysis(start: date, end: date, kakao_talk_zip: BytesIO):
-    temp_dir = os.path.abspath("temp/" + str(dt.now().timestamp()).replace(".", ""))
+    current_timestamp = str(dt.now().timestamp()).replace(".", "")
+    temp_dir = os.path.abspath("temp/" + current_timestamp)
+    logging.info(f"start ios analysis: {current_timestamp}")
     analysis_text = []
     message = {}
     etc_msg = {"inner": {}, "outer": {}, "kick": {}, "hidden": 0}
@@ -63,6 +65,7 @@ async def analysis(start: date, end: date, kakao_talk_zip: BytesIO):
         talk_list = os.listdir(temp_dir)
         talk_list.sort()
         for file_name in talk_list:
+            logging.info(f"file search: {current_timestamp}/{file_name}")
             with open(f"{temp_dir}/{file_name}", "r") as f:
                 all_messages = f.readlines()[4:]
                 first_msg = await _get_first_msg_(all_messages)
