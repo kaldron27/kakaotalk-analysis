@@ -14,6 +14,7 @@ import re
 from datetime import datetime as dt
 from zipfile import ZipFile, BadZipFile
 import traceback
+import logging
 
 route = APIRouter(prefix="/kakao", tags=["kakao analysis"])
 MAX_COUNT = 10
@@ -28,21 +29,24 @@ base_api.mount("/static", StaticFiles(directory=os.path.join(BASE_DIR, "static")
 
 @route.post("/analysis", response_model=DefaultReponse)
 async def kakao_analysis(start: str, end: str, kakao_talk_zip: UploadFile = File(default=None)):
+    current_timestamp = str(dt.now().timestamp()).replace(".", "")
+    logging.info(f"{current_timestamp}: start analysis")
     start = dt.strptime(re.sub("\D", "", start), "%Y%m%d").date()
     end = dt.strptime(re.sub("\D", "", end), "%Y%m%d").date()
-    result = await analysis(start, end, kakao_talk_zip)
+    result = await analysis(start, end, kakao_talk_zip, current_timestamp)
 
     return DefaultReponse.success(result)
 
 
-async def analysis(start: date, end: date, kakao_talk_zip: UploadFile):
+async def analysis(start: date, end: date, kakao_talk_zip: UploadFile, current_timestamp: str):
     file_data = await kakao_talk_zip.read()
+    logging.info(f"{current_timestamp} file read finished")
     zip_io = io.BytesIO(file_data)
     try:
         ZipFile(zip_io)
-        return await service_ios.analysis(start, end, zip_io)
+        return await service_ios.analysis(start, end, zip_io, current_timestamp)
     except BadZipFile:
-        return await service_android.analysis(start, end, file_data)
+        return await service_android.analysis(start, end, file_data, current_timestamp)
 
 
 @route.get("/index")

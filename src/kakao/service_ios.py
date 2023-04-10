@@ -38,10 +38,9 @@ hidden = "채팅방 관리자가 메시지를 가렸습니다."
 # 2023. 3. 23. 21:04: 채팅방 관리자가 메시지를 가렸습니다.
 
 
-async def analysis(start: date, end: date, kakao_talk_zip: BytesIO):
-    current_timestamp = str(dt.now().timestamp()).replace(".", "")
+async def analysis(start: date, end: date, kakao_talk_zip: BytesIO, current_timestamp: str):
+    logging.info(f"{current_timestamp}: start ios analysis")
     temp_dir = os.path.abspath("temp/" + current_timestamp)
-    logging.info(f"start ios analysis: {current_timestamp}")
     analysis_text = []
     message = {}
     etc_msg = {"inner": {}, "outer": {}, "kick": {}, "hidden": 0}
