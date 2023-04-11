@@ -17,6 +17,14 @@
             div_rankers.appendChild(ranker_canvas);
             const ctx = document.getElementById('rankers');
 
+            const div_words = document.getElementById('div_words');
+            document.getElementById('words').remove();
+            let words_canvas = document.createElement('canvas');
+            words_canvas.setAttribute('id', 'words');
+            words_canvas.setAttribute("class", "words")
+            div_words.appendChild(words_canvas);
+            const words_ctx = document.getElementById('words');
+
             const ranker_labels = [];
             const ranker_count_datas = [];
             const rankers = t_data.result.all_rankers
@@ -141,6 +149,60 @@
                 all_ul.appendChild(all_li)
             };
 
+            const words = t_data.result.words
+            const words_labels = []
+            const words_count_datas = []
+
+            let words_all_div = document.getElementById('words_all');
+
+            while (words_all_div.hasChildNodes()) {
+                words_all_div.removeChild(words_all_div.firstChild);
+            }
+
+            let words_all_p = document.createElement('p');
+            words_all_p.innerText = "많이쓰는말👀";
+            words_all_div.appendChild(words_all_p);
+            let words_all_ul = document.createElement('ul');
+            words_all_div.appendChild(words_all_ul)
+
+            for (i = 0; i < words.length; i++) {
+                var cnt = words[i].count
+                if (words_labels.length < 25) {
+                    words_labels.push(words[i].words + " (" + words[i].count + "회)");
+                    words_count_datas.push(cnt);
+                }
+                let words_all_li = document.createElement("li");
+                words_all_li.innerText = words[i].words + ": " + cnt + "회";
+                words_all_li.setAttribute("class", 'all')
+                words_all_ul.appendChild(words_all_li)
+
+            };
+
+            new Chart(words_ctx, {
+                type: 'bar',
+                data: {
+                    labels: words_labels,
+                    datasets: [{
+                        label: '많이쓰는단어 top 25',
+                        categoryPercentage: 0.7,
+                        barPercentage: 0.8,
+                        barThickness: 10,
+                        maxBarThickness: 8,
+                        minBarLength: 2,
+                        data: words_count_datas,
+                        backgroundColor: ["#cc3333", "#33cc33", "#3333cc", "#ccaa33", "#cc33aa", "#33ccaa", "#aacc33", "#aa33cc", "#33aacc", "#123456"]
+                    }]
+                },
+                options: {
+                    legend: {
+                        labels: {
+                            fontSize: 16
+                        }
+                    }
+                }
+            });
+
+
             div_msg.setAttribute('class', 'end')
             div_msg.innerText = "분석완료오오오옷~!";
         }
@@ -229,6 +291,10 @@
 
     </div>
     <br />
+    <div id="div_words" class="words">
+        <canvas id="words" class="words"> </canvas>
+    </div>
+    <div id="words_all" class="words_all"></div>
 </body>
 
 </html>
