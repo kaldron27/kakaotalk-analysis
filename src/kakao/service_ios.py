@@ -131,6 +131,10 @@ async def analysis(start: date, end: date, kakao_talk_zip: BytesIO, current_time
                                 elif hidden in msg:
                                     etc_msg["hidden"] += 1
 
+                                if nick not in message and nick:
+                                    message[nick] = 0
+                                    
+
                         except Exception:
                             logging.warn(traceback.format_exc())
                             continue
