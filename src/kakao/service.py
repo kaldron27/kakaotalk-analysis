@@ -16,7 +16,7 @@ async def _sort_message_(message: dict, etc_msg: dict, start: date, end: date, a
         if name in etc_msg["inner"]:
             current_date = etc_msg["inner"][name]
             if date_type["date"] is not None:
-                if current_date > date_type["date"]:
+                if current_date >= date_type["date"]:
                     date_type["date"] = current_date
                     date_type["type"] = "신입🫶🏼"
                     date_type["code"] = "newb"
@@ -29,7 +29,7 @@ async def _sort_message_(message: dict, etc_msg: dict, start: date, end: date, a
         if name in etc_msg["outer"]:
             current_date = etc_msg["outer"][name]
             if date_type["date"] is not None:
-                if current_date > date_type["date"]:
+                if current_date >= date_type["date"]:
                     date_type["date"] = current_date
                     date_type["type"] = "나감ㅠ"
                     date_type["code"] = "out"
@@ -41,7 +41,7 @@ async def _sort_message_(message: dict, etc_msg: dict, start: date, end: date, a
         if name in etc_msg["kick"]:
             current_date = etc_msg["kick"][name]
             if date_type["date"] is not None:
-                if current_date > date_type["date"]:
+                if current_date >= date_type["date"]:
                     date_type["date"] = current_date
                     date_type["type"] = "강퇴🧨"
                     date_type["code"] = "kick"
