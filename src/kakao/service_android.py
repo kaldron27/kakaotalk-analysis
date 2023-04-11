@@ -74,12 +74,12 @@ async def analysis(start: date, end: date, kakao_talk_zip: bytes, current_timest
                             other_str = l_str[date_idx:].strip()
                             nick_idx = other_str.index(":")
                             nick = other_str[1:nick_idx].strip()
-                            text = other_str[nick_idx + 1 :].strip()
-                            add_text = okt.pos(text_compile.sub("", text))
-                            for txt, txt_type in add_text:
-                                if txt_type in ("Noun", "Verb"):
-                                    if txt not in stop_words:
-                                        analysis_text.append(txt)
+                            # text = other_str[nick_idx + 1 :].strip()
+                            # add_text = okt.pos(text_compile.sub("", text))
+                            # for txt, txt_type in add_text:
+                            #     if txt_type in ("Noun", "Verb"):
+                            #         if txt not in stop_words:
+                            #             analysis_text.append(txt)
 
                             if nick not in message:
                                 message[nick] = 0

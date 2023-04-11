@@ -71,16 +71,16 @@ async def _sort_message_(message: dict, etc_msg: dict, start: date, end: date, a
     # result["top_rankers"] = count_list[:10]
     # result["viewer"] = viewer
 
-    text_result = await _analysis_text_(analysis_text)
-    result["words"] = text_result
+    # text_result = await _analysis_text_(analysis_text)
+    # result["words"] = text_result
     return result
 
 
-async def _analysis_text_(text: list):
-    all_word_df = pd.DataFrame({"words": text, "count": len(text) * [1]})
-    all_word_df = all_word_df.groupby("words").count()
-    result_dict = all_word_df.sort_values("count", ascending=False).head(50).to_dict()
-    result = []
-    for words, count in result_dict.get("count").items():
-        result.append({"words": words, "count": count})
-    return result
+# async def _analysis_text_(text: list):
+#     all_word_df = pd.DataFrame({"words": text, "count": len(text) * [1]})
+#     all_word_df = all_word_df.groupby("words").count()
+#     result_dict = all_word_df.sort_values("count", ascending=False).head(50).to_dict()
+#     result = []
+#     for words, count in result_dict.get("count").items():
+#         result.append({"words": words, "count": count})
+#     return result
