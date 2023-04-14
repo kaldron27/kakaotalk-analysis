@@ -5,7 +5,7 @@ from datetime import date
 import pandas as pd
 
 
-async def _sort_message_(message: dict, etc_msg: dict, start: date, end: date, analysis_text: list = []):
+async def _sort_message_(message: dict, etc_msg: dict, start: date, end: date, kick, kick_per_day: int, analysis_text: list = []):
     logging.info("sort messages")
     count_list = []
     allcount = 0
@@ -58,8 +58,22 @@ async def _sort_message_(message: dict, etc_msg: dict, start: date, end: date, a
 
     # viewer = [f"집계일자: {start}~{end}", f"총 대화량: {allcount}"]
     for data in count_list:
-        rate = round(data["count"] / allcount * 100, 2)
+        text_count = data["count"]
+        rate = round(text_count / allcount * 100, 2)
         data["rate"] = rate
+
+        condition_code = data["condition_code"]
+        is_kick = False
+
+        if condition_code == "older":
+            is_kick = text_count <= kick
+        elif condition_code == "newb":
+            newb_days = (end - data["condition_date"].date()).days + 1
+            newb_kick_count = kick_per_day * newb_days
+            is_kick = text_count <= kick and text_count <= newb_kick_count 
+
+        data["is_kick"] = is_kick
+
         # viewer_str = f"{data['ranking']}위: {data['name']} ({data['count']}회 / {rate}%)"
         # if data["condition"] is not None:
         #     viewer_str += f' ({data["condition"]}, {data["condition_date"]})'

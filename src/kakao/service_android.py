@@ -37,7 +37,7 @@ hidden = "채팅방 관리자가 메시지를 가렸습니다."
 # 2023. 3. 23. 21:04: 채팅방 관리자가 메시지를 가렸습니다.
 
 
-async def analysis(start: date, end: date, kakao_talk_zip: bytes, current_timestamp: str):
+async def analysis(start: date, end: date, kakao_talk_zip: bytes, current_timestamp: str, kick: int, kick_per_day: int):
     logging.info(f"{current_timestamp} start android analysis")
     temp_dir = os.path.abspath("temp/" + current_timestamp)
     analysis_text = []
@@ -69,7 +69,7 @@ async def analysis(start: date, end: date, kakao_talk_zip: bytes, current_timest
                             continue
                         if t_date >= start:
                             if t_date > end:
-                                return await service._sort_message_(message, etc_msg, start, end, analysis_text)
+                                return await service._sort_message_(message, etc_msg, start, end, kick, kick_per_day, analysis_text)
                             # t_time = full_time.time()
                             other_str = l_str[date_idx:].strip()
                             nick_idx = other_str.index(":")
@@ -126,7 +126,7 @@ async def analysis(start: date, end: date, kakao_talk_zip: bytes, current_timest
         if os.path.exists(temp_dir):
             shutil.rmtree(temp_dir)
 
-    return await service._sort_message_(message, etc_msg, start, end, analysis_text)
+    return await service._sort_message_(message, etc_msg, start, end, kick, kick_per_day, analysis_text)
 
 
 async def _get_first_msg_(messages: list):

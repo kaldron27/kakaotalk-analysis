@@ -20,12 +20,12 @@
             const ranker_labels = [];
             const ranker_count_datas = [];
             const rankers = t_data.result.all_rankers
-            var loop_cnt = 10
-            if (rankers.length < loop_cnt) {
-                loop_cnt = rankers.length;
+            let ranker_count = 10
+            if (rankers.length < ranker_count) {
+                ranker_count = rankers.length;
             }
 
-            for (i = 0; i < loop_cnt; i++) {
+            for (i = 0; i < ranker_count; i++) {
                 ranker_labels.push(rankers[i].ranking + "위: " + rankers[i].name + " (" + rankers[i].count + "회/" + rankers[i].rate + "%)");
                 ranker_count_datas.push(rankers[i].count);
             };
@@ -106,13 +106,13 @@
 
             for (i = 0; i < users.length; i++) {
 
-                var condition = ""
+                let condition = ""
                 if (users[i].condition != null) {
-                    var condition_date = users[i].condition_date.replace("T", " ").replace("Z", "")
+                    let condition_date = users[i].condition_date.replace("T", " ").replace("Z", "")
                     condition = " (" + users[i].condition + ", " + condition_date + ")"
                 }
 
-                var text = users[i].ranking + "위: " + users[i].name + " (" + users[i].count + "회/" + users[i].rate + "%)" + condition;
+                let text = users[i].ranking + "위: " + users[i].name + " (" + users[i].count + "회/" + users[i].rate + "%)" + condition;
 
                 if (users[i].condition_code == 'out' || users[i].condition_code == 'kick') {
                     let li = document.createElement("li");
@@ -120,17 +120,17 @@
                     li.setAttribute("class", users[i].condition_code)
                     outer_ul.appendChild(li)
                 }
-                else if (users[i].count > kick_count) {
+                else if (users[i].is_kick) {
                     let li = document.createElement("li");
                     li.innerText = text;
                     li.setAttribute("class", users[i].condition_code)
-                    top_ul.appendChild(li)
+                    lower_ul.appendChild(li)
                 }
                 else {
                     let li = document.createElement("li");
                     li.innerText = text;
                     li.setAttribute("class", users[i].condition_code)
-                    lower_ul.appendChild(li)
+                    top_ul.appendChild(li)
                 }
 
                 let all_li = document.createElement("li");
@@ -183,11 +183,13 @@
 
             const payload = new FormData(form);
 
+            const kick_count = document.getElementById("kick").value
+
             let div_msg = document.getElementById("div_msg");
             div_msg.setAttribute('class', 'ing')
             div_msg.innerText = "분.....석......중..........";
 
-            fetch('/kakao/analysis?start=' + start_date + '&end=' + end_date, {
+            fetch('/kakao/analysis?start=' + start_date + '&end=' + end_date + '&kick=' + kick_count, {
                 method: 'POST',
                 body: payload,
             })

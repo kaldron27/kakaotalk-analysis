@@ -18,7 +18,6 @@ import logging
 
 route = APIRouter(prefix="/kakao", tags=["kakao analysis"])
 MAX_COUNT = 10
-
 BASE_DIR = os.path.abspath("")
 
 templates = Jinja2Templates(directory="static")
@@ -28,25 +27,27 @@ base_api.mount("/static", StaticFiles(directory=os.path.join(BASE_DIR, "static")
 
 
 @route.post("/analysis", response_model=DefaultReponse)
-async def kakao_analysis(start: str, end: str, kakao_talk_zip: UploadFile = File(default=None)):
+async def kakao_analysis(start: str, end: str, kick: int, kakao_talk_zip: UploadFile = File(default=None)):
     current_timestamp = str(dt.now().timestamp()).replace(".", "")
     logging.info(f"{current_timestamp}: start analysis")
     start = dt.strptime(re.sub("\D", "", start), "%Y%m%d").date()
     end = dt.strptime(re.sub("\D", "", end), "%Y%m%d").date()
-    result = await analysis(start, end, kakao_talk_zip, current_timestamp)
+    total_days = (end - start).days + 1
+    kick_per_day = int(kick / total_days)
+    result = await analysis(start, end, kakao_talk_zip, current_timestamp, kick, kick_per_day)
 
     return DefaultReponse.success(result)
 
 
-async def analysis(start: date, end: date, kakao_talk_zip: UploadFile, current_timestamp: str):
+async def analysis(start: date, end: date, kakao_talk_zip: UploadFile, current_timestamp: str, kick: int, kick_per_day: int):
     file_data = await kakao_talk_zip.read()
     logging.info(f"{current_timestamp} file read finished")
     zip_io = io.BytesIO(file_data)
     try:
         ZipFile(zip_io)
-        return await service_ios.analysis(start, end, zip_io, current_timestamp)
+        return await service_ios.analysis(start, end, zip_io, current_timestamp, kick, kick_per_day)
     except BadZipFile:
-        return await service_android.analysis(start, end, file_data, current_timestamp)
+        return await service_android.analysis(start, end, file_data, current_timestamp, kick, kick_per_day)
 
 
 @route.get("/index")
