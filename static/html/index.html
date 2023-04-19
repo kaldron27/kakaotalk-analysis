@@ -209,7 +209,11 @@
 
                 })
                 .catch((error) => {
-                    div_msg.innerText = "에러,,,발생,,,ㅠ\n" + error;
+                    let msg = error
+                    if (msg == 'TypeError: Load failed'){
+                        msg = "데이터가 느린가봐용ㅠ 업로드 넘 느려용ㅠ"
+                    };
+                    div_msg.innerText = "에러,,,발생,,,ㅠ\n" + msg;
                 });
         });
 
