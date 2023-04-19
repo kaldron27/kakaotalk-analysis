@@ -56,6 +56,8 @@ async def _sort_message_(message: dict, etc_msg: dict, start: date, end: date, k
         allcount += count
         count_list.append({"name": f"{name}", "count": count, "condition": date_type["type"], "condition_date": date_type["date"], "condition_code": date_type["code"], "ranking": ranking})
 
+    if allcount == 0:
+        raise APIExcpetion(DefaultErrorMessage.NOT_FOUND_TEXT_RANGE)
     # viewer = [f"집계일자: {start}~{end}", f"총 대화량: {allcount}"]
     for data in count_list:
         text_count = data["count"]

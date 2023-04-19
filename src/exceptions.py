@@ -19,6 +19,8 @@ class DefaultErrorMessage(BaseErrorMessage):
     NOT_FOUND = status.HTTP_404_NOT_FOUND, 9001, "not found"
     UNAUTHORIZED = status.HTTP_401_UNAUTHORIZED, 9002, "unauthorized"
     DB_ERROR_VALIDATION = status.HTTP_422_UNPROCESSABLE_ENTITY, 9006, "validation error"
+    NOT_FOUND_TEXT_RANGE = status.HTTP_404_NOT_FOUND, 9007, "기간내에 조회된 대화가 엄소용ㅠ"
+
 
 class APIExcpetion(Exception):
     def __init__(self, error_message: BaseErrorMessage, added_message=None):
