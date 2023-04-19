@@ -7,6 +7,7 @@ import pandas as pd
 
 
 OLDER_TIMEDELTA = datetime.timedelta(days=60)
+TIME_FORMAT = "%Y-%m-%d %H:%M"
 
 
 async def _sort_message_(message: dict, etc_msg: dict, start: date, end: date, kick, kick_per_day: int, analysis_text: list = []):
@@ -18,8 +19,10 @@ async def _sort_message_(message: dict, etc_msg: dict, start: date, end: date, k
     older_day = today - OLDER_TIMEDELTA
     for name, count in dict(sorted(message.items(), key=lambda item: item[1], reverse=True)).items():
         date_type = {"date": None, "type": None, "code": None}
+        inner_date = None
         if name in etc_msg["inner"]:
             current_date = etc_msg["inner"][name]
+            inner_date = current_date.strftime(TIME_FORMAT)
             if date_type["date"] is not None:
                 if current_date >= date_type["date"]:
                     date_type["date"] = current_date
@@ -69,7 +72,10 @@ async def _sort_message_(message: dict, etc_msg: dict, start: date, end: date, k
 
         if date_type["code"] in ("older", "newb") or (date_type["date"].date() >= start and date_type["date"].date() <= end):
             allcount += count
-            count_list.append({"name": f"{name}", "count": count, "condition": date_type["type"], "condition_date": date_type["date"], "condition_code": date_type["code"], "ranking": ranking})
+            if date_type["code"] in ("out", "kick") and inner_date is None:
+                inner_date = "????-??-?? ??:??:??"
+            add_count_data = {"name": f"{name}", "count": count, "condition": date_type["type"], "condition_date": date_type["date"], "condition_code": date_type["code"], "ranking": ranking, "inner_date": inner_date}
+            count_list.append(add_count_data)
             ranking += 1
 
     if allcount == 0:
@@ -91,6 +97,14 @@ async def _sort_message_(message: dict, etc_msg: dict, start: date, end: date, k
             is_kick = text_count <= kick and text_count <= newb_kick_count
 
         data["is_kick"] = is_kick
+        if type(data["condition_date"]) == dt:
+            data["condition_date"] = data["condition_date"].strftime(TIME_FORMAT)
+        data["condition_str"] = ""
+        if data["condition"] is not None:
+            if data["inner_date"] is not None and data["condition_code"] in ("out", "kick"):
+                data["condition_str"] = f" ({data['condition']}, {data['inner_date']} ~ {data['condition_date']})"
+            else:
+                data["condition_str"] = f" ({data['condition']}, {data['condition_date']})"
 
         # viewer_str = f"{data['ranking']}위: {data['name']} ({data['count']}회 / {rate}%)"
         # if data["condition"] is not None:

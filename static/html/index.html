@@ -106,11 +106,7 @@
 
                 let condition = ""
                 if (element.condition != null) {
-                    let condition_date = null
-                    if (element.condition_date != null){
-                        condition_date = element.condition_date.replace("T", " ").replace("Z", "")
-                    }
-                    condition = " (" + element.condition + ", " + condition_date + ")"
+                    condition = element.condition_str;
                 }
 
                 let text = element.ranking + "위: " + element.name + " (" + element.count + "회/" + element.rate + "%)" + condition;
