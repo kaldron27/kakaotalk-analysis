@@ -25,7 +25,7 @@
                 ranker_count = rankers.length;
             }
 
-            for (i = 0; i < ranker_count; i++) {
+            for (let i = 0; i < ranker_count; i++) {
                 ranker_labels.push(rankers[i].ranking + "위: " + rankers[i].name + " (" + rankers[i].count + "회/" + rankers[i].rate + "%)");
                 ranker_count_datas.push(rankers[i].count);
             };
@@ -102,34 +102,35 @@
             all_div.appendChild(all_ul)
 
             const users = t_data.result.all_rankers
-            const kick_count = document.getElementById("kick").value
-
-            for (i = 0; i < users.length; i++) {
+            for (const element of users) {
 
                 let condition = ""
-                if (users[i].condition != null) {
-                    let condition_date = users[i].condition_date.replace("T", " ").replace("Z", "")
-                    condition = " (" + users[i].condition + ", " + condition_date + ")"
+                if (element.condition != null) {
+                    let condition_date = null
+                    if (element.condition_date != null){
+                        condition_date = element.condition_date.replace("T", " ").replace("Z", "")
+                    }
+                    condition = " (" + element.condition + ", " + condition_date + ")"
                 }
 
-                let text = users[i].ranking + "위: " + users[i].name + " (" + users[i].count + "회/" + users[i].rate + "%)" + condition;
+                let text = element.ranking + "위: " + element.name + " (" + element.count + "회/" + element.rate + "%)" + condition;
 
-                if (users[i].condition_code == 'out' || users[i].condition_code == 'kick') {
+                if (element.condition_code == 'out' || element.condition_code == 'kick') {
                     let li = document.createElement("li");
                     li.innerText = text;
-                    li.setAttribute("class", users[i].condition_code)
+                    li.setAttribute("class", element.condition_code)
                     outer_ul.appendChild(li)
                 }
-                else if (users[i].is_kick) {
+                else if (element.is_kick) {
                     let li = document.createElement("li");
                     li.innerText = text;
-                    li.setAttribute("class", users[i].condition_code)
+                    li.setAttribute("class", element.condition_code)
                     lower_ul.appendChild(li)
                 }
                 else {
                     let li = document.createElement("li");
                     li.innerText = text;
-                    li.setAttribute("class", users[i].condition_code)
+                    li.setAttribute("class", element.condition_code)
                     top_ul.appendChild(li)
                 }
 
@@ -183,7 +184,7 @@
 
             const payload = new FormData(form);
 
-            const kick_count = document.getElementById("kick").value
+            let kick_count = document.getElementById("kick").value
 
             let div_msg = document.getElementById("div_msg");
             div_msg.setAttribute('class', 'ing')
@@ -210,7 +211,7 @@
                 })
                 .catch((error) => {
                     let msg = error
-                    if (msg == 'TypeError: Load failed'){
+                    if (msg == 'TypeError: Load failed') {
                         msg = "데이터가 느린가봐용ㅠ 업로드 넘 느려용ㅠ"
                     };
                     div_msg.innerText = "에러,,,발생,,,ㅠ\n" + msg;

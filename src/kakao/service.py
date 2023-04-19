@@ -1,17 +1,22 @@
 from fastapi import UploadFile
 import logging
 from src.exceptions import *
-from datetime import date
+from datetime import date, datetime as dt
+import datetime
 import pandas as pd
+
+
+OLDER_TIMEDELTA = datetime.timedelta(days=60)
 
 
 async def _sort_message_(message: dict, etc_msg: dict, start: date, end: date, kick, kick_per_day: int, analysis_text: list = []):
     logging.info("sort messages")
     count_list = []
     allcount = 0
-    ranking = 0
+    ranking = 1
+    today = dt.now().date()
+    older_day = today - OLDER_TIMEDELTA
     for name, count in dict(sorted(message.items(), key=lambda item: item[1], reverse=True)).items():
-        ranking += 1
         date_type = {"date": None, "type": None, "code": None}
         if name in etc_msg["inner"]:
             current_date = etc_msg["inner"][name]
@@ -50,11 +55,22 @@ async def _sort_message_(message: dict, etc_msg: dict, start: date, end: date, k
                 date_type["type"] = "강퇴🧨"
                 date_type["code"] = "kick"
 
-        if date_type["code"] is None:
+        if date_type["date"] is None or (date_type["code"] == "newb" and date_type["date"].date() < start):
             date_type["code"] = "older"
+            date_type["type"] = None
+            if date_type["date"] is None:
+                date_type["type"] = "언제오셨지❗️❓"
+                date_type["date"] = "????-??-?? ??:??:??"
+            else:
+                if date_type["date"].date() < older_day:
+                    date_type["type"] = "고인물🫡"
+                else:
+                    date_type["type"] = "고여가는중💧"
 
-        allcount += count
-        count_list.append({"name": f"{name}", "count": count, "condition": date_type["type"], "condition_date": date_type["date"], "condition_code": date_type["code"], "ranking": ranking})
+        if date_type["code"] in ("older", "newb") or (date_type["date"].date() >= start and date_type["date"].date() <= end):
+            allcount += count
+            count_list.append({"name": f"{name}", "count": count, "condition": date_type["type"], "condition_date": date_type["date"], "condition_code": date_type["code"], "ranking": ranking})
+            ranking += 1
 
     if allcount == 0:
         raise APIExcpetion(DefaultErrorMessage.NOT_FOUND_TEXT_RANGE)
@@ -72,7 +88,7 @@ async def _sort_message_(message: dict, etc_msg: dict, start: date, end: date, k
         elif condition_code == "newb":
             newb_days = (end - data["condition_date"].date()).days + 1
             newb_kick_count = kick_per_day * newb_days
-            is_kick = text_count <= kick and text_count <= newb_kick_count 
+            is_kick = text_count <= kick and text_count <= newb_kick_count
 
         data["is_kick"] = is_kick
 
