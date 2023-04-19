@@ -97,9 +97,6 @@ async def analysis(start: date, end: date, kakao_talk_zip: bytes, current_timest
                         t_date = current_date.date()
                         msg: str = str_list[1].strip()
 
-                        if t_date < start or t_date > end:
-                            continue
-
                         nick = ""
                         if inner in msg:
                             nick = msg.replace(inner, "")

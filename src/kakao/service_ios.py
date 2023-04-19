@@ -74,8 +74,6 @@ async def analysis(start: date, end: date, kakao_talk_zip: BytesIO, current_time
 
                 if first_date > end:
                     break
-                if not ((first_date <= start and start <= last_date) or (first_date <= end and end <= last_date) or (start <= first_date and first_date <= end) or (start <= last_date and last_date <= end)):
-                    continue
 
                 for l_str in all_messages:
                     if regex.match(l_str):
@@ -114,9 +112,6 @@ async def analysis(start: date, end: date, kakao_talk_zip: BytesIO, current_time
                                 current_date = dt.strptime(date_str, "%Y. %m. %d. %H:%M")
                                 t_date = current_date.date()
                                 msg: str = str_list[2].strip()
-
-                                if t_date < start or t_date > end:
-                                    continue
 
                                 nick = ""
                                 if inner in msg:
